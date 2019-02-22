@@ -1,5 +1,7 @@
 <resources>
-    <string name="app_name">officersclub</string>
+    <string name="app_name">Officersclub</string>
+
+    <string name="app_name_short">OffClub</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -11,4 +13,13 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="location">Location</string>
+    <!-- Menu /Submenus-->
+    <string name="club">"Club"</string>
+    <string name="pool">"Pool"</string>
+    <string name="library">"Library"</string>
+    <string name="gym">"Gym"</string>
+    <string name="canteen">"Canteen"</string>
+    <string name="bar">"BAR"</string>
+
 </resources>

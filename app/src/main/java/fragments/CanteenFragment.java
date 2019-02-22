@@ -1,23 +1,28 @@
-package com.example.officersclub;
+package fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTabHost;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.officersclub.R;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link AccountFragment.OnFragmentInteractionListener} interface
+ * {@link CanteenFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link AccountFragment#newInstance} factory method to
+ * Use the {@link CanteenFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AccountFragment extends Fragment {
+public class CanteenFragment extends Fragment implements MenuFragment.OnFragmentInteractionListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -26,10 +31,10 @@ public class AccountFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    private FragmentTabHost tabHost;
     private OnFragmentInteractionListener mListener;
-
-    public AccountFragment() {
+    static Activity activity ;
+    public CanteenFragment() {
         // Required empty public constructor
     }
 
@@ -39,14 +44,15 @@ public class AccountFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment AccountFragment.
+     * @return A new instance of fragment CanteenFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static AccountFragment newInstance(String param1, String param2) {
-        AccountFragment fragment = new AccountFragment();
+    public static CanteenFragment newInstance(String param1, String param2, Activity activity) {
+        CanteenFragment fragment = new CanteenFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
+        CanteenFragment.activity=activity;
         fragment.setArguments(args);
         return fragment;
     }
@@ -58,13 +64,34 @@ public class AccountFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+//        Bundle arg2 = new Bundle();
+//        arg2.putInt("Arg for Frag2", 2);
+//        tabHost.addTab(tabHost.newTabSpec("Tab1").setIndicator("Tab1"),MenuFragment.class,arg2);
+
+
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_account, container, false);
+        tabHost =  (FragmentTabHost)getActivity().findViewById(android.R.id.tabhost);;
+        Log.i("activity",getActivity().toString()
+        );
+//        View v;
+        tabHost.setup(getActivity(), getChildFragmentManager(), R.id.realtabcontent);
+//
+        Bundle arg10 = new Bundle();
+        arg10.putInt("Arg for Frag1", 1);
+        tabHost.addTab(tabHost.newTabSpec("Tab1").setIndicator("Tab1"),MenuFragment.class,arg10);
+
+//
+//
+        return tabHost;
+//        View view =inflater.inflate(R.layout.fragment_canteen, container, false);
+
+//        return inflater.inflate(R.layout.fragment_canteen, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -89,6 +116,11 @@ public class AccountFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 
     /**
