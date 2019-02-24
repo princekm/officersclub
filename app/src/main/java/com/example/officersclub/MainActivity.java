@@ -218,6 +218,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     public static DBHelper dbHelper;
+    public static ArrayList<Bill> bills;
+    public static ArrayList<User> users;
     private User user;
     private NavigationView navigationView;
     private TextView userNameView;
@@ -273,6 +275,8 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         setUserDetails();
         readMessagesToDB();
+        bills=dbHelper.getAllBills();
+
     }
 private void setUserDetails()
 {

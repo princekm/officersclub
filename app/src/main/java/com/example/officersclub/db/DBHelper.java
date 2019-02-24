@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -53,8 +54,8 @@ public class DBHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put(BILL_NO_COLUMN, bill.getBillNo());
         contentValues.put(DATE_COLUMN,bill.getDate() );
-        contentValues.put(TIME_COLUMN,bill.getDate() );
-        contentValues.put(AMOUNT_COLUMN,bill.getDate() );
+        contentValues.put(TIME_COLUMN,bill.getTime() );
+        contentValues.put(AMOUNT_COLUMN,bill.getAmount() );
         db.insert(BILL_TABLE_NAME, null, contentValues);
         return true;
     }
@@ -109,7 +110,7 @@ public class DBHelper extends SQLiteOpenHelper {
             bill.setBillNo(new Integer(res.getString(res.getColumnIndex(BILL_NO_COLUMN))));
             bill.setDate(res.getString(res.getColumnIndex(DATE_COLUMN)));
             bill.setTime(res.getString(res.getColumnIndex(TIME_COLUMN)));
-            bill.notifyAll();
+         //   bill.notifyAll();
             arrayList.add(bill);
             res.moveToNext();
         }
@@ -135,17 +136,23 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         return arrayList;
     }
-    public ArrayList<Bill> getBillsBy(String date) {
+    public ArrayList<Bill> getBillsByDate(String date) {
         ArrayList<Bill> arrayList = new ArrayList<Bill>();
 
         //hp = new HashMap();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res =  db.rawQuery( "select * from "+BILL_TABLE_NAME+" where "+DATE_COLUMN+"="+date, null );
+
+        Cursor res =db.query(true, BILL_TABLE_NAME, new String[] { BILL_NO_COLUMN,
+                        DATE_COLUMN,TIME_COLUMN,AMOUNT_COLUMN }, DATE_COLUMN + " LIKE ?",
+                new String[] { date+"%" }, null, null, null,
+                null);
+        //Cursor res =  db.rawQuery( "select * from "+BILL_TABLE_NAME+" where "+DATE_COLUMN+" like "+date+"%",  );
         res.moveToFirst();
 
         while(res.isAfterLast() == false){
             Bill  bill=new Bill();
 
+            Log.d("month",date);
             bill.setAmount(new Double(res.getString(res.getColumnIndex(AMOUNT_COLUMN))));
             bill.setBillNo(new Integer(res.getString(res.getColumnIndex(BILL_NO_COLUMN))));
             bill.setDate(res.getString(res.getColumnIndex(DATE_COLUMN)));

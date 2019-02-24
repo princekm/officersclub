@@ -1,6 +1,7 @@
 package com.example.officersclub;
 
 import android.content.Context;
+import android.database.DataSetObserver;
 import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +28,17 @@ public class BillListAdapter extends ArrayAdapter<Bill> implements View.OnClickL
 
     }
 
+    public ArrayList<Bill> getDataSet()
+    {
+        return this.dataSet;
+        }
+    public  void setDataSet(ArrayList<Bill> dataSet)
+    {
+        this.dataSet.clear();;
+        this.dataSet.addAll(dataSet);
+        notifyDataSetChanged();
+    }
+
     @Override
     public void onClick(View v) {
 
@@ -44,6 +56,7 @@ public class BillListAdapter extends ArrayAdapter<Bill> implements View.OnClickL
     }
 
     private int lastPosition = -1;
+
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
