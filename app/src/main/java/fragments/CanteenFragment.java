@@ -4,14 +4,18 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.officersclub.R;
+import com.example.officersclub.ViewPagerAdapter;
 
 
 /**
@@ -47,7 +51,7 @@ public class CanteenFragment extends Fragment implements MenuFragment.OnFragment
      * @return A new instance of fragment CanteenFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static CanteenFragment newInstance(String param1, String param2, Activity activity) {
+    public static CanteenFragment newInstance(String param1, String param2) {
         CanteenFragment fragment = new CanteenFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
@@ -72,26 +76,14 @@ public class CanteenFragment extends Fragment implements MenuFragment.OnFragment
 
     }
 
+    private  View view;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        tabHost =  (FragmentTabHost)getActivity().findViewById(android.R.id.tabhost);;
-        Log.i("activity",getActivity().toString()
-        );
-//        View v;
-        tabHost.setup(getActivity(), getChildFragmentManager(), R.id.realtabcontent);
-//
-        Bundle arg10 = new Bundle();
-        arg10.putInt("Arg for Frag1", 1);
-        tabHost.addTab(tabHost.newTabSpec("Tab1").setIndicator("Tab1"),MenuFragment.class,arg10);
 
-//
-//
-        return tabHost;
-//        View view =inflater.inflate(R.layout.fragment_canteen, container, false);
-
-//        return inflater.inflate(R.layout.fragment_canteen, container, false);
+        view =inflater.inflate(R.layout.fragment_canteen, container, false);
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -106,6 +98,8 @@ public class CanteenFragment extends Fragment implements MenuFragment.OnFragment
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
+
+
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -136,5 +130,25 @@ public class CanteenFragment extends Fragment implements MenuFragment.OnFragment
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    private int[] tabIcons = {
+            R.drawable.ic_menu,
+            R.drawable.ic_bill,
+    };
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        ViewPager viewPager = view.findViewById(R.id.viewpager);
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager());
+        adapter.addFrag(new MenuFragment(), "MENU");
+        adapter.addFrag(new BillFragment(), "BILLS");
+       viewPager.setAdapter(adapter);
+        TabLayout tabLayout = view.findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
+        tabLayout.getTabAt(0).setIcon(tabIcons[0]);
+        tabLayout.getTabAt(1).setIcon(tabIcons[1]);
+
     }
 }

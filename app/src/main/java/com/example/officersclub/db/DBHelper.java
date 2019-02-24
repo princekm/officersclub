@@ -63,7 +63,7 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(USER_COLUMN, user.getName());
-        contentValues.put(STAFFNO_COLUMN, "12");
+        contentValues.put(STAFFNO_COLUMN, user.getStaffNo());
         db.execSQL("delete from "+ USER_TABLE_NAME);
         long retVal=db.insert(USER_TABLE_NAME, null, contentValues);
         return retVal;

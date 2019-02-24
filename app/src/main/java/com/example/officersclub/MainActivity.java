@@ -4,6 +4,8 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -25,6 +27,7 @@ import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
+import com.example.officersclub.db.Bill;
 import com.example.officersclub.db.DBHelper;
 import com.example.officersclub.db.User;
 
@@ -115,6 +118,34 @@ public class MainActivity extends AppCompatActivity
         //you can leave it empty
     }
 
+    private void readMessagesToDB(){
+
+        final String SMS_URI_INBOX = "content://sms/inbox";
+        try {
+            Uri uri = Uri.parse(SMS_URI_INBOX);
+            String[] projection = new String[] { "_id", "address", "person", "body", "date", "type" };
+            Cursor cur = getContentResolver().query(uri, projection, "address='ADBELCLB'", null, "date desc");
+            if (cur.moveToFirst()) {
+                int indexBody = cur.getColumnIndex("body");
+                do {
+
+                    String message = cur.getString(indexBody);
+                    Bill bill=new Bill(message);
+                    dbHelper.insertBillDetails(bill);
+                } while (cur.moveToNext());
+
+                if (!cur.isClosed()) {
+                    cur.close();
+                    cur = null;
+                }
+            } else {
+            } // end if
+        }
+        catch (
+                SQLiteException ex) {
+            Log.d("SQLiteException", ex.getMessage());
+        }
+    }
     private void populateExpandableList() {
 
         expandableListAdapter = new ExpandableListAdapter(this, headerList, childList);
@@ -173,7 +204,7 @@ public class MainActivity extends AppCompatActivity
                         switch(model.resID)
                         {
                             case R.drawable.ic_menu_canteen:
-                                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_main, CanteenFragment.newInstance("q","q",(Activity)v.getContext()), "CanteenFragment").commit();//.addToBackStack(null);
+                                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_main, CanteenFragment.newInstance("q","q"), "CanteenFragment").commit();//.addToBackStack(null);
                                 onBackPressed();
 
                                 break;
@@ -186,7 +217,7 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    private DBHelper dbHelper;
+    public static DBHelper dbHelper;
     private User user;
     private NavigationView navigationView;
     private TextView userNameView;
@@ -197,6 +228,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        dbHelper = new DBHelper(this);
 
 
         if (ContextCompat.checkSelfPermission(this,
@@ -225,14 +257,6 @@ public class MainActivity extends AppCompatActivity
         }
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
 
         expandableListView = findViewById(R.id.expandableListView);
@@ -247,34 +271,34 @@ public class MainActivity extends AppCompatActivity
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        dbHelper = new DBHelper(this);
-        if(dbHelper.getAllUsers().size()==0)
-            Snackbar.make(toolbar, "User not configured", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
-        else {
-            Snackbar.make(toolbar, "User configured", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
-            ArrayList<User> list =dbHelper.getAllUsers();
-            user=list.get(0);
-            if(user!=null) {
-                View view = navigationView.getHeaderView(0);
-                userNameView = view.findViewById(R.id.user_db);
-                if (view != null) {
-                    userNameView.setText(user.getName());
-                }
-                staffNoView = view.findViewById(R.id.staffno_db);
-                if (staffNoView != null) {
-                    staffNoView.setText(user.getStaffNo());
-                }
+        setUserDetails();
+        readMessagesToDB();
+    }
+private void setUserDetails()
+{
+    if(dbHelper.getAllUsers().size()==0)
+
+        Snackbar.make(navigationView, "User not configured", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
+    else {
+        Snackbar.make(navigationView, "User configured", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
+        ArrayList<User> list =dbHelper.getAllUsers();
+        user=list.get(0);
+        if(user!=null) {
+            View view = navigationView.getHeaderView(0);
+            userNameView = view.findViewById(R.id.user_db);
+            if (view != null) {
+                userNameView.setText(user.getName());
+            }
+            staffNoView = view.findViewById(R.id.staffno_db);
+            if (staffNoView != null) {
+                staffNoView.setText(user.getStaffNo());
             }
         }
-
-
-
-        //        tabLayout = (TabLayout) findViewById(R.id.tabs);
-//        tabLayout.setupWithViewPager(viewPager);
     }
 
+}
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

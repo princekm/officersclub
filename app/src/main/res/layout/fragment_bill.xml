@@ -1,14 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="fragments.BillFragment">
+<LinearLayout
+    android:layout_marginTop="10dp"
+    android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:weightSum="4"
+    android:layout_height="70dp">
+    <Spinner
+        android:layout_weight="2"
+        android:id="@+id/spinner1"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:entries="@array/month_array"
+        android:background="@color/colorPrimary"
 
-    <!-- TODO: Update blank fragment layout -->
+        android:spinnerMode="dropdown"/>
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_weight="2"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:textSize="15dp"
+        android:id="@+id/bill_total"
+        android:gravity="center"
+        android:background="@color/colorAccent"
+        android:textColor="@android:color/background_light"
+        android:text="Total="/>
+</LinearLayout>
 
-</FrameLayout>
+    <ListView
+        android:id="@+id/billlist"
+        style="@style/Widget.AppCompat.ListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>
